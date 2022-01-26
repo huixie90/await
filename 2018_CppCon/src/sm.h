@@ -64,7 +64,7 @@ struct Frame {
   }
 };
 
-bool sm_binary_search(int const* first, int const* last, int key) {
+inline bool sm_binary_search(int const* first, int const* last, int key) {
   Frame f;
   f.init(first, last, key);
   while (f.state == 0)
@@ -73,7 +73,7 @@ bool sm_binary_search(int const* first, int const* last, int key) {
 }
 
 // Multi lookup with prefetching using hand-crafted state machine.
-long SmMultiLookup(
+inline long SmMultiLookup(
   std::vector<int> const& v, std::vector<int> const& lookups, int streams) {
   std::vector<Frame> f(streams);
   size_t N = streams - 1;

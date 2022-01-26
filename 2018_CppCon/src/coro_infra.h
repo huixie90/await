@@ -1,13 +1,16 @@
 #pragma once
 
+#include <cstdio>
+#include <cstdint>
 #include <xmmintrin.h>
-#include <experimental/coroutine>
+#include <coroutine>
+#include <exception>
 
 ///// --- INFRASTRUCTURE CODE BEGIN ---- ////
 
 struct scheduler_queue {
   static constexpr const int N = 256;
-  using coro_handle = std::experimental::coroutine_handle<>;
+  using coro_handle = std::coroutine_handle<>;
 
   uint32_t head = 0;
   uint32_t tail = 0;
@@ -106,7 +109,7 @@ struct throttler;
 
 struct root_task {
   struct promise_type;
-  using HDL = std::experimental::coroutine_handle<promise_type>;
+  using HDL = std::coroutine_handle<promise_type>;
 
   struct promise_type {
     throttler *owner = nullptr;
@@ -115,10 +118,10 @@ struct root_task {
     void operator delete(void *p, size_t sz) { allocator.free(p, sz); }
 
     root_task get_return_object() { return root_task{*this}; }
-    std::experimental::suspend_always initial_suspend() { return {}; }
+    std::suspend_always initial_suspend() { return {}; }
     void return_void();
     void unhandled_exception() noexcept { std::terminate(); }
-    std::experimental::suspend_never final_suspend() { return {}; }
+    std::suspend_never final_suspend() noexcept{ return {}; }
   };
 
   // TODO: this can be done via a wrapper coroutine
@@ -166,6 +169,6 @@ struct throttler {
   ~throttler() { run(); }
 };
 
-void root_task::promise_type::return_void() { owner->on_task_done(); }
+inline void root_task::promise_type::return_void() { owner->on_task_done(); }
 
 ///// --- INFRASTRUCTURE CODE END ---- ////

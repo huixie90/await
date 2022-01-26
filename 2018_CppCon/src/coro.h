@@ -24,7 +24,7 @@ root_task CoroBinarySearch(Iterator first, Iterator last, int val,
   on_not_found();
 }
 
-long CoroMultiLookup(
+inline long CoroMultiLookup(
   std::vector<int> const& v, std::vector<int> const& lookups, int streams) {
 
   size_t found_count = 0;

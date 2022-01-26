@@ -23,7 +23,6 @@ struct State {
 
     int count = (ByteCount / sizeof(int));
     v.reserve(count);
-    int val = 0;
     for (int i = 0; i < count; ++i)
       v.push_back(i + i);
 
@@ -102,6 +101,7 @@ int main(int argc, const char** argv) {
   if (argc != 4)
     return usage();
 
+  using namespace std::string_view_literals;
   TestFn testFn = nullptr;
   if (argv[1] == "coro"sv) testFn = &testCoro;
   else if (argv[1] == "naive"sv) testFn = &testNaive;
